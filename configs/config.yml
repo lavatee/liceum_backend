@@ -1,0 +1,13 @@
+port: "8000"
+smtp:
+  port: "587"
+  host: "smtp.gmail.com"
+  gmail: "giftstochildren@gmail.com"
+  password: "jknj qhgv strt iuts"
+db:
+  host: "localhost"
+  port: "5432"
+  user: "postgres"
+  password: "gena777"
+  dbname: "postgres"
+  sslmode: "disable"

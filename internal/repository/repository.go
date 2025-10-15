@@ -8,7 +8,7 @@ import (
 type Events interface {
 	CreateEvent(event model.Event) (int, error)
 	DeleteEvent(eventId int) error
-	CreateEventBlocks(blocks []model.EventBlock) error
+	CreateEventBlocks(blocks []model.EventBlock, eventId int) error
 	DeleteEventBlock(blockId int) error
 	EditEventInfo(event model.Event) error
 	EditBlockInfo(block model.EventBlock) error

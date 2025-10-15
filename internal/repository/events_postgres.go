@@ -26,10 +26,13 @@ func (r *EventsPostgres) CreateEvent(event model.Event) (int, error) {
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
+	if err := r.CreateEventBlocks(event.EventBlocks, id); err != nil {
+		return 0, err
+	}
 	return id, nil
 }
 
-func (r *EventsPostgres) CreateEventBlocks(blocks []model.EventBlock) error {
+func (r *EventsPostgres) CreateEventBlocks(blocks []model.EventBlock, eventId int) error {
 	query := fmt.Sprintf("INSERT INTO %s (event_id, name, description, link, start_date, end_date) VALUES ", eventBlocksTable)
 	queryPieces := make([]string, len(blocks))
 	argsCounter := 0
@@ -37,7 +40,7 @@ func (r *EventsPostgres) CreateEventBlocks(blocks []model.EventBlock) error {
 	for i, block := range blocks {
 		queryPieces[i] = fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d)", argsCounter+1, argsCounter+2, argsCounter+3, argsCounter+4, argsCounter+5, argsCounter+6)
 		argsCounter += 6
-		argsArr = append(argsArr, block.EventID, block.Name, block.Description, block.Link, block.StartDate, block.EndDate)
+		argsArr = append(argsArr, eventId, block.Name, block.Description, block.Link, block.StartDate, block.EndDate)
 	}
 	query += strings.Join(queryPieces, ", ")
 	_, err := r.db.Exec(query, argsArr...)

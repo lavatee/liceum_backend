@@ -23,6 +23,7 @@ type Events interface {
 	ParseToken(token string) (jwt.MapClaims, error)
 	GetOneEvent(eventId int) (model.Event, error)
 	GetOneBlock(blockId int) (model.EventBlock, error)
+	RefreshToken(refreshToken string) (string, string, error)
 }
 
 type Service struct {

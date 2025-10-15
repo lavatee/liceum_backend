@@ -77,6 +77,7 @@ func NewEventsService(repo *repository.Repository, smtpAuth smtp.Auth, gmail str
 
 var adminsMap = map[string]bool{
 	"gorodilow.aleksandr@yandex.ru": true,
+	"aleksgraznov0@gmail.com":       true,
 }
 
 func (s *EventsService) CheckIsAdmin(email string) bool {
@@ -158,7 +159,11 @@ func (s *EventsService) DeleteEvent(eventId int) error {
 }
 
 func (s *EventsService) CreateEventBlocks(blocks []model.EventBlock) error {
-	return s.repo.Events.CreateEventBlocks(blocks)
+	if len(blocks) == 0 {
+		return fmt.Errorf("blocks is empty")
+	}
+	eventId := blocks[0].EventID
+	return s.repo.Events.CreateEventBlocks(blocks, eventId)
 }
 
 func (s *EventsService) DeleteEventBlock(blockId int) error {
@@ -187,4 +192,28 @@ func (s *EventsService) GetOneEvent(eventId int) (model.Event, error) {
 
 func (s *EventsService) GetOneBlock(blockId int) (model.EventBlock, error) {
 	return s.repo.Events.GetOneBlock(blockId)
+}
+
+func (s *EventsService) RefreshToken(refreshToken string) (string, string, error) {
+	parsedToken, err := s.ParseToken(refreshToken)
+	if err != nil {
+		return "", "", err
+	}
+	accessClaims := jwt.MapClaims{
+		"exp":   time.Now().Add(accessTTL).Unix(),
+		"email": parsedToken["email"],
+	}
+	refreshClaims := jwt.MapClaims{
+		"exp":   time.Now().Add(refreshTTL).Unix(),
+		"email": parsedToken["email"],
+	}
+	accessToken, err := s.NewToken(accessClaims)
+	if err != nil {
+		return "", "", err
+	}
+	refreshToken, err = s.NewToken(refreshClaims)
+	if err != nil {
+		return "", "", err
+	}
+	return accessToken, refreshToken, nil
 }

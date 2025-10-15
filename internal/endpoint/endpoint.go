@@ -37,6 +37,7 @@ func (e *Endpoint) InitRoutes() *gin.Engine {
 		users.GET("/block/:id", e.GetOneBlock)
 		users.POST("/send-code", e.SendAuthCode)
 		users.POST("/verify-code", e.VerifyCode)
+		users.POST("/refresh-token", e.RefreshToken)
 	}
 	admins := router.Group("/admins", e.Middleware)
 	{
@@ -47,4 +48,5 @@ func (e *Endpoint) InitRoutes() *gin.Engine {
 		admins.DELETE("/blocks/:id", e.DeleteEventBlock)
 		admins.PUT("/blocks/:id", e.PutEventBlock)
 	}
+	return router
 }
