@@ -26,7 +26,7 @@ func (r *EventsPostgres) CreateEvent(event model.Event) (int, error) {
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
-	if err := r.CreateEventBlocks(event.EventBlocks, id); err != nil {
+	if err := r.CreateEventBlocks(event.EventBlocks, id); err != nil && len(event.EventBlocks) > 0 {
 		return 0, err
 	}
 	return id, nil
@@ -243,4 +243,11 @@ func (r *EventsPostgres) GetOneBlock(blockId int) (model.EventBlock, error) {
 		return model.EventBlock{}, err
 	}
 	return block, nil
+}
+
+func (r *EventsPostgres) CleanEvents() error {
+	threeMonthsAgo := time.Now().AddDate(0, -3, 0)
+	query := fmt.Sprintf("DELETE FROM %s WHERE end_date < $1", eventBlocksTable)
+	_, err := r.db.Exec(query, threeMonthsAgo)
+	return err
 }

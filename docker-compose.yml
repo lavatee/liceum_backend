@@ -1,0 +1,44 @@
+networks:
+  app:
+services:
+  postgres:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: genatasks777
+    ports:
+      - 5432:5432
+    networks:
+      - app
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 7s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+  backend:
+    build: 
+      context: .
+    command: ./main
+    depends_on:
+      - postgres
+    networks:
+      - app
+  frontend:
+    build: 
+      context: ./liceum_frontend
+    networks:
+      - app
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app

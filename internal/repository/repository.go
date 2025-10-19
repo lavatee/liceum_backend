@@ -16,6 +16,7 @@ type Events interface {
 	GetAllEvents() ([]model.Event, error)
 	GetOneEvent(eventId int) (model.Event, error)
 	GetOneBlock(blockId int) (model.EventBlock, error)
+	CleanEvents() error
 }
 
 type Repository struct {

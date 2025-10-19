@@ -5,9 +5,9 @@ smtp:
   gmail: "giftstochildren@gmail.com"
   password: "jknj qhgv strt iuts"
 db:
-  host: "localhost"
+  host: "postgres"
   port: "5432"
   user: "postgres"
-  password: "gena777"
+  password: "genatasks777"
   dbname: "postgres"
   sslmode: "disable"

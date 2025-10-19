@@ -11,7 +11,10 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/lavatee/liceum_backend/internal/model"
 	"github.com/lavatee/liceum_backend/internal/repository"
+	"github.com/sirupsen/logrus"
 )
+
+var getRequestsCounter = 0
 
 const (
 	tokenKey   = "miron_huesos_123"
@@ -183,6 +186,13 @@ func (s *EventsService) GetCurrentEvents() ([]model.Event, error) {
 }
 
 func (s *EventsService) GetAllEvents() ([]model.Event, error) {
+	getRequestsCounter += 1
+	if getRequestsCounter == 20 {
+		getRequestsCounter = 0
+		if err := s.repo.Events.CleanEvents(); err != nil {
+			logrus.Errorf("CLEAN EVENTS ERROR: %s", err.Error())
+		}
+	}
 	return s.repo.Events.GetAllEvents()
 }
 
