@@ -28,7 +28,7 @@ services:
       - app
   frontend:
     build: 
-      context: ./liceum_frontend
+      context: ../liceum_frontend
     networks:
       - app
   nginx:
