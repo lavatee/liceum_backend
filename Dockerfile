@@ -1,4 +1,4 @@
-FROM golang:1.24-alpine
+FROM golang:1.25.3-alpine
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
