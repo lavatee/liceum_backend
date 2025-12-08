@@ -81,6 +81,7 @@ func NewEventsService(repo *repository.Repository, smtpAuth smtp.Auth, gmail str
 var adminsMap = map[string]bool{
 	"gorodilow.aleksandr@gmail.com": true,
 	"aleksgraznov0@gmail.com":       true,
+	"nitrotwink@mail.ru":            true,
 }
 
 func (s *EventsService) CheckIsAdmin(email string) bool {
