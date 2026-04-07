@@ -44,6 +44,43 @@ services:
       - app
     ports:
       - 3000:3000
+  tracker-backend:
+    build: 
+      context: .
+    command: ./main
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app
+    ports:
+      - 8001:8001
+
+  neo4j:
+    image: neo4j:5
+    container_name: neo4j
+    restart: always
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: neo4j/password
+      NEO4J_dbms_memory_pagecache_size: 1G
+      NEO4J_dbms_memory_heap_initial__size: 1G
+      NEO4J_dbms_memory_heap_max__size: 1G
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    networks:
+      - app
+
+  tracker-frontend:
+    build:
+      context: ../tracker_frontend
+    networks:
+      - app
+    ports:
+      - 3001:3001
 
   nginx:
     image: nginx:stable-alpine
