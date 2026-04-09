@@ -95,5 +95,7 @@ services:
     depends_on:
       - frontend
       - backend
+      - tracker-backend
+      - tracker-frontend
     networks:
       - app
