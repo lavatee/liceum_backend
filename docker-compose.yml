@@ -48,15 +48,13 @@ services:
       - 3000:3000
   tracker-backend:
     build: 
-      context: .
+      context: ../tracker_backend
     command: ./main
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - app
-    ports:
-      - 8001:8001
 
   neo4j:
     image: neo4j:5
